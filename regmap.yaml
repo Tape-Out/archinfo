@@ -1,0 +1,26 @@
+ip: archinfo
+contract: { aw: 8, dw: 32 }
+base: 0x10012000
+size: 0x100
+regs:
+  # 厂商号的编码在 Jep106.bs 里算好再送进来，所以这里每个寄存器只有一个 32 位字段
+  - name: vendor
+    offset: 0x00
+    desc: JEDEC vendor in the mvendorid layout
+    fields: [ { name: val, width: 32, sw: r, hw: w, volatile: true } ]
+  - name: soc
+    offset: 0x04
+    desc: SoC ID in the SMCCC SOC_ID layout
+    fields: [ { name: val, width: 32, sw: r, hw: w, volatile: true } ]
+  - name: revision
+    offset: 0x08
+    desc: SoC revision
+    fields: [ { name: val, width: 32, sw: r, hw: w, volatile: true } ]
+  - name: harts
+    offset: 0x0C
+    desc: number of harts
+    fields: [ { name: val, width: 32, sw: r, hw: w, volatile: true } ]
+  - name: ram
+    offset: 0x10
+    desc: on-chip RAM in bytes
+    fields: [ { name: val, width: 32, sw: r, hw: w, volatile: true } ]

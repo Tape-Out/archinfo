@@ -1,0 +1,241 @@
+name: archinfo
+version: 0.1.0
+spec: '0.1'
+kind: ip
+lang:
+- bsv
+- bh
+identity:
+  slug: archinfo-tapeout-bsv
+  display_name: Chip identity registers
+  summary: Read-only registers giving the JEDEC vendor, SoC ID, revision, hart 
+    count and RAM size of the chip.
+  category: peripheral
+  subcategories:
+  - identity
+  ip_family: archinfo
+  integration_profile:
+  - apb4-slave
+  maturity: simulated
+contract:
+  version: 1
+  ctrl:
+    shape: flat
+    aw: 8
+    dw: 32
+params:
+  # JEDEC 厂商号：续码 0x7f 的个数，与最后一个字节去掉校验位的低 7 位。两个都是 0 表示非商用
+  bank:
+    type: int
+    default: 0
+    range:
+    - 0
+    - 127
+  maker:
+    type: int
+    default: 0
+    range:
+    - 0
+    - 126
+  # SMCCC SOC_ID 里厂商自定的 SoC 号
+  part:
+    type: int
+    default: 0
+    range:
+    - 0
+    - 65535
+  # 调试规范的 IDCODE 只给修订号 4 位，先按那个限，rvdbg 报的与这里是同一个数
+  rev:
+    type: int
+    default: 0
+    range:
+    - 0
+    - 15
+  harts:
+    type: int
+    default: 1
+    range:
+    - 1
+    - 8
+  ramBytes:
+    type: int
+    default: 65536
+    range:
+    - 0
+    - 4294967295
+emit:
+- kind: bsv
+  package: Archinfo
+  module: mkArchinfo
+  config_type: ArchinfoCfg
+  interface: ArchinfoIfc
+  ctrl: regs
+- kind: verilog-flat
+  bus: apb4
+deps:
+  hwcore: ^0.1
+  amba: ^0.1
+area:
+  base:
+    per: bank
+    points:
+      '0': 16.8
+      '127': 22.96
+  params:
+    maker:
+      points:
+        '0': 0.0
+        '126': 6.16
+    part:
+      points:
+        '0': 0.0
+        '65535': 3.36
+    rev:
+      points:
+        '0': 0.0
+        '15': 3.36
+    harts:
+      points:
+        '1': 0.0
+        '8': 0.0
+    ramBytes:
+      points:
+        '0': -5.04
+        '65536': 0.0
+        '4294967295': 0.0
+  margin: 0.296
+  model: points-additive
+  error:
+    bound: 0.296
+    sign: over
+    note: first measured by ran recal --init at the range ends and the default 
+      of each parameter; the margin is the worst underestimate at 7 off-grid 
+      probes
+  measured:
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 65536
+    um2: 16.8
+  - at:
+      bank: 127
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 65536
+    um2: 22.96
+  - at:
+      bank: 0
+      maker: 126
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 65536
+    um2: 22.96
+  - at:
+      bank: 0
+      maker: 0
+      part: 65535
+      rev: 0
+      harts: 1
+      ramBytes: 65536
+    um2: 20.16
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 15
+      harts: 1
+      ramBytes: 65536
+    um2: 20.16
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 8
+      ramBytes: 65536
+    um2: 16.8
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 0
+    um2: 11.76
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 4294967295
+    um2: 16.8
+  - at:
+      bank: 63
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 65536
+    um2: 22.96
+  - at:
+      bank: 0
+      maker: 63
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 65536
+    um2: 25.76
+  - at:
+      bank: 0
+      maker: 0
+      part: 32767
+      rev: 0
+      harts: 1
+      ramBytes: 65536
+    um2: 20.16
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 7
+      harts: 1
+      ramBytes: 65536
+    um2: 20.16
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 4
+      ramBytes: 65536
+    um2: 16.8
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 32768
+    um2: 16.8
+  - at:
+      bank: 0
+      maker: 0
+      part: 0
+      rev: 0
+      harts: 1
+      ramBytes: 2147516415
+    um2: 17.92
+  corner:
+    tool: ecc
+    pdk: ics55
+    freq_mhz: 100
+    measured: '2026-09-15'
+    toolchain: bsc 2026.01 · yosys 0.68+195 · ecc 0.1.0a11
+    gen_digest: sha256:aab2d4153dcf4747
